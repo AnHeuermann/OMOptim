@@ -2,6 +2,12 @@ ifeq ($(OMBUILDDIR),)
 $(error OMBUILDDIR variable is not set.)
 endif
 
+ifndef OMDEV
+	@echo You have to set the OMDEV variabile pointing to your OMDev package root! Exiting....
+	@echo See OpenModelica/OMCompiler/README.Windows.md
+	ABORT
+endif
+
 builddir_bin=$(OMBUILDDIR)/bin
 builddir_lib=$(OMBUILDDIR)/lib
 builddir_share=$(OMBUILDDIR)/share/

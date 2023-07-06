@@ -1,5 +1,4 @@
-OMDEVMSYS=$(shell cygpath $$OMDEV)
-CMAKE=$(OMDEVMSYS)/bin/cmake/bin/cmake
+CMAKE=cmake
 CMAKE_TARGET="MSYS Makefiles"
 PARADISEO=ParadisEO-2.0.1/build
 OMC_CONFIG=OMOptim/omc_config.h
