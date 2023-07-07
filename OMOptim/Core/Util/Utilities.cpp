@@ -84,7 +84,7 @@ QString& Utilities::getMinGWBinPath()
     QString omHome = om + QString("/bin");
     QString omdev = env.value("OMDEV");
     QString omdev_msys = env.value("OMDEV_MSYS");
-    QString ucrt64msys2 = "tools/msys64/mingw64/bin";
+    QString ucrt64msys2 = "tools/msys64/ucrt64/bin";
     // Try OM first
     if (QDir(om + QDir::separator() + ucrt64msys2).exists())
     {
