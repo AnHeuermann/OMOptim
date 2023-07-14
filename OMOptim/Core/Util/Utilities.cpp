@@ -74,7 +74,6 @@ QString& Utilities::getOMScriptLog()
   return OMScriptLogPath;
 }
 
-
 QString& Utilities::getMinGWBinPath()
 {
     static QString mingw;
@@ -83,28 +82,56 @@ QString& Utilities::getMinGWBinPath()
     QString om = env.value("OPENMODELICAHOME");
     QString omHome = om + QString("/bin");
     QString omdev = env.value("OMDEV");
-    QString omdev_msys = env.value("OMDEV_MSYS");
+    // adrpo: oh the horror :)
+    QString mingw32msysOM = "mingw/bin";
+    QString mingw32msysOMDEV = "tools/mingw/bin";
     QString ucrt64msys2 = "tools/msys64/ucrt64/bin";
-    // Try OM first
+    QString mingw32msys2 = "tools/msys/mingw32/bin";
+    QString mingw64msys2 = "tools/msys/mingw64/bin";
+#if defined(__MINGW32__) && defined(__MINGW64__)
+    // Try OPENMODELICAHOME and OMDEV with UCRT64 first
     if (QDir(om + QDir::separator() + ucrt64msys2).exists())
     {
       mingw = om + QDir::separator() + ucrt64msys2;
     }
-    // Try OMDEV_MSYS
-    else if (QDir(omdev_msys + QDir::separator() + "/bin").exists())
-    {
-      mingw = omdev_msys + QDir::separator() + "/bin";
-    }
-    // Try OMDEV
     else if (QDir(omdev + QDir::separator() + ucrt64msys2).exists())
     {
       mingw = omdev + QDir::separator() + ucrt64msys2;
     }
-
-    // Default value if nothing found
-    if (mingw.isEmpty()) // assume ucrt64
+    // Try OPENMODELICAHOME and OMDEV with MINGW
+    else if (QDir(om + QDir::separator() + mingw64msys2).exists())
     {
-       mingw = om + QDir::separator() + ucrt64msys2;
+      mingw = om + QDir::separator() + mingw64msys2;
+    }
+    else if (QDir(omdev + QDir::separator() + mingw64msys2).exists())
+    {
+      mingw = omdev + QDir::separator() + mingw64msys2;
+    }
+#elif defined(__MINGW32__)
+    if (QDir(om + QDir::separator() + mingw32msys2).exists())
+    {
+      mingw = om + QDir::separator() + mingw32msys2;
+    }
+    else if (QDir(omdev + QDir::separator() + mingw32msys2).exists())
+    {
+      mingw = omdev + QDir::separator() + mingw32msys2;
+    }
+    if (mingw.isEmpty())
+    {
+        // old OpenModelica?!
+        if (QDir(om + QDir::separator() + mingw32msysOM).exists())
+        {
+          mingw = om + QDir::separator() + mingw32msysOM;
+        }
+        else if (!QDir(omdev + QDir::separator() + mingw32msysOMDEV).exists())
+        {
+          mingw = omdev + QDir::separator() + mingw32msysOMDEV;
+        }
+    }
+#endif
+    if (mingw.isEmpty()) // assume minw64
+    {
+       mingw = om + QDir::separator() + mingw64msys2;
     }
 #else
     mingw = "";
